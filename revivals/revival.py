@@ -1,6 +1,17 @@
 import os, subprocess, shutil, tempfile, requests, tarfile
 from tqdm import tqdm
 
+def create_desktop_entry(name, exe, scheme):
+    path = "%s/.local/share/applications/%s.desktop" % (os.path.expanduser('~'), name)
+    with open(path, "w") as desktop_handle:
+        desktop_handle.write("[Desktop Entry]\n")
+        desktop_handle.write("Name=%s\n" % (name))
+        desktop_handle.write("Comment=Managed by WineORC2\n")
+        desktop_handle.write("Type=Application\n")
+        desktop_handle.write("Exec=%s\n" % (exe))
+        desktop_handle.write("MimeType=x-scheme-handler/%s\n" % (scheme))
+        desktop_handle.close()
+
 class Revival:
     def setup_vars(self):
         self.path = "%s/.wineorc/%s" % (self.home_dir, self.name)

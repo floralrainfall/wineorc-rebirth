@@ -1,4 +1,4 @@
-from revivals.revival import Revival
+from revivals.revival import Revival, create_desktop_entry
 from tqdm import tqdm
 import os, requests, subprocess, tempfile
 
@@ -17,12 +17,29 @@ class Crapblox(Revival):
                 handle.write(data)
             handle.close()
             launcher_proc = subprocess.Popen(['/usr/bin/wine', self.launcher_path], env=self.env_vars)
-            with open(self.desktop_entry_path, "w") as desktop_handle:
-                desktop_handle.write("[Desktop Entry]\n")
-                desktop_handle.write("Name=%s Player\n" % (self.name))
-                desktop_handle.write("Comment=Managed by WineORC2\n")
-                desktop_handle.write("Type=Application\n")
-                desktop_handle.write("Exec=env WINEPREFIX=%s wine %s" % (self.path, self.launcher_path) + " %U\n")
-                desktop_handle.write("MimeType=x-scheme-handler/crapblox2\n")
-                desktop_handle.close()
+            create_desktop_entry("wine-" + self.name, "env WINEPREFIX=%s wine %s" % (self.path, self.launcher_path) + "%U", "crapblox2")
             launcher_proc.wait()
+
+class Itteblox(Revival):
+    def setup_vars(self):
+        print("WARNING: This doesn't really work for some reason. It errors about __sys_errlist and I don't quite know how to fix it")
+        self.name = "Itteblox"
+
+    def install(self):
+        self.create_prefix()
+        wineboot_proc = subprocess.Popen(['/usr/bin/winecfg', '-v', 'win10'], env=self.env_vars)
+        wineboot_proc.wait()
+        itteblox_version = requests.get("https://setup.ittblox.gay/version")        
+        self.launcher_path = "%s/drive_c/users/%s/AppData/Local/ItteBlox/Versions/%s/ItteBloxPlayerLauncher.exe" % (self.path, os.getlogin(), str(itteblox_version.content,"utf-8"))
+        temp_dir = tempfile.TemporaryDirectory()
+        url = "https://setup.ittblox.gay/ItteBloxPlayerLauncher.exe"
+        response = requests.get(url, stream=True)
+        with open("%s/ItteBloxPlayerLauncher.exe" % temp_dir.name, "wb") as handle:
+            for data in tqdm(response.iter_content()):
+                handle.write(data)
+            handle.close()
+            launcher_proc = subprocess.Popen(['/usr/bin/wine', "%s/ItteBloxPlayerLauncher.exe" % temp_dir.name], env=self.env_vars)
+            create_desktop_entry("wine-" + self.name, "env WINEPREFIX=%s wine %s" % (self.path, self.launcher_path) + " %U", "ittblx-player")
+            launcher_proc.wait()
+            wineboot_proc = subprocess.Popen(['/usr/bin/wineserver', '-k'], env=self.env_vars)
+            wineboot_proc.wait()

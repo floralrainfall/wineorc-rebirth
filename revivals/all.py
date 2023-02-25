@@ -4,7 +4,7 @@ import os, requests, subprocess, tempfile
 
 class Crapblox(Revival):
     def setup_vars(self):
-        self.name = "Crapblox"
+        self.name = "Crapblox 2016"
 
     def install(self):
         self.create_prefix()
@@ -17,8 +17,7 @@ class Crapblox(Revival):
                 handle.write(data)
             handle.close()
             launcher_proc = subprocess.Popen(['/usr/bin/wine', self.launcher_path], env=self.env_vars)
-            create_desktop_entry("wine-" + self.name, "env WINEPREFIX=%s wine %s" % (self.path, self.launcher_path) + "%U", "crapblox2")
-            launcher_proc.wait()
+            create_desktop_entry("wine-" + self.name, "env WINEPREFIX=%s wine %s" % (self.path, self.launcher_path) + " %U", "crapblox2016")
 
 class Itteblox(Revival):
     def setup_vars(self):
@@ -39,7 +38,6 @@ class Itteblox(Revival):
                 handle.write(data)
             handle.close()
             launcher_proc = subprocess.Popen(['/usr/bin/wine', "%s/ItteBloxPlayerLauncher.exe" % temp_dir.name], env=self.env_vars)
+
             create_desktop_entry("wine-" + self.name, "env WINEPREFIX=%s wine %s" % (self.path, self.launcher_path) + " %U", "ittblx-player")
-            launcher_proc.wait()
-            wineboot_proc = subprocess.Popen(['/usr/bin/wineserver', '-k'], env=self.env_vars)
-            wineboot_proc.wait()
+            

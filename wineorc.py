@@ -31,21 +31,19 @@ def init_revival(revival_id):
 def tk_install_revival_callback(list : tk.Listbox, panel : tk.Frame):
     revival = init_revival(list.curselection()[0])
     revival.install()
-    list.selection_set(list.curselection()[0])
+    tk_list_onselect(0, list, panel)
     os.system("update-desktop-database ~/.local/share/applications")
 
 def tk_uninstall_revival_callback(list : tk.Listbox, panel : tk.Frame):
     revival = init_revival(list.curselection()[0])
     revival.uninstall()
-    list.selection_set(list.curselection()[0])
+    tk_list_onselect(0, list, panel)
 
 def tk_install_dxvk_callback(list : tk.Listbox, panel : tk.Frame):
     revival = init_revival(list.curselection()[0])   
     if not os.path.exists("dxvk.tar.gz"):
         messagebox.showwarning("WineORC v2: DXVK Warning", "WineORC will download DXVK from https://github.com/doitsujin/dxvk/releases/download/v2.0/dxvk-2.0.tar.gz. This is a ~7MB file.")
     revival.install_dxvk()    
-    list.selection_set(list.curselection()[0])
-
 
 def tk_list_onselect(x, list : tk.Listbox, panel : tk.Frame):
     revival = init_revival(list.curselection()[0])

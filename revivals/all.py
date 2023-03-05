@@ -4,7 +4,7 @@ import os, requests, subprocess, tempfile
 
 class Crapblox(Revival):
     def setup_vars(self):
-        self.name = "Crapblox 2016"
+        self.name = "Crapblox2016"
 
     def install(self):
         self.create_prefix()
